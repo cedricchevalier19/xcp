@@ -153,9 +153,12 @@ fn copy_source(
             }
 
             FileType::Symlink => {
-                let lfile = read_link(from)?;
-                debug!("Send symlink operation {:?} to {:?}", lfile, target);
-                work_tx.send(Operation::Link(lfile, target))?;
+                //let lfile = read_link(from)?;
+                debug!("Send symlink operation {:?} to {:?}", from, target);
+                //work_tx.send(Operation::Link(lfile, target))?;
+                let meta = from.metadata()?;
+                updates.update(Ok(meta.len()))?;
+                work_tx.send(Operation::Copy(from, target))?;
             }
 
             FileType::Dir => {
